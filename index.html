@@ -6,6 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0d1a">
 <title>Законка RMRP</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ===== НАСТРОЙКИ FIREBASE (общая база) ===== */
+window.FBCFG={
+  apiKey:"AIzaSyAGKsCOq0OMvvjuWPtMljCPHyikq2F-yxE",
+  authDomain:"zakonka-d9f6d.firebaseapp.com",
+  projectId:"zakonka-d9f6d",
+  storageBucket:"zakonka-d9f6d.firebasestorage.app",
+  messagingSenderId:"465746199555",
+  appId:"1:465746199555:web:b7875ee2b129882106ba36"
+};
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c8cff'/%3E%3Cpath d='M16 6v18M9 10h14M9 10l-3 8h6zM23 10l-3 8h6zM11 25h10' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{--bg:#0a0d1a;--bg2:#12162c;--card:rgba(255,255,255,.05);--card-h:rgba(255,255,255,.09);--line:rgba(255,255,255,.11);--t:#eef0fb;--m:#9aa1bd;--acc:#7c8cff;--acc2:#c084fc;--ok:#4ade80;--bad:#ff6b7d;--warn:#ffc15a;--shadow:0 12px 40px rgba(0,0,0,.5);--panel:#141833;
@@ -593,7 +606,10 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openAdmin(
 /* ===== старт ===== */
 setTheme(store.get('rmrp_theme','dark'));
 loadDB();applySettings();renderPub();
-const shReady=(async()=>{try{if(!window.claude||!claude.use)return;DL=await claude.use('downloads');USR=await claude.use('user');const db=await claude.use('db');if(!db)return;SH=db;
+const shReady=(async()=>{try{let db=null;
+ if(window.claude&&claude.use){DL=await claude.use('downloads');USR=await claude.use('user');db=await claude.use('db')}
+ else if(window.firebase&&window.FBCFG){firebase.initializeApp(window.FBCFG);db=firebase.firestore();try{db.settings({experimentalAutoDetectLongPolling:true,merge:true})}catch(_){}}
+ if(!db)return;SH=db;
  SH.collection('entries').onSnapshot(s=>{if(s.metadata.fromCache&&s.empty)return;REM.entries=new Map(s.docs.map(d=>[d.id,Object.assign({},d.data(),{id:d.id})]));applyRemote()},()=>{});
  SH.collection('users').onSnapshot(s=>{if(s.metadata.fromCache&&s.empty)return;REM.users=new Map(s.docs.map(d=>[d.id,d.data()]));applyRemote()},()=>{});
  SH.doc('meta/settings').onSnapshot(s=>{REM.settings=s.exists?s.data():null;applyRemote()},()=>{});
