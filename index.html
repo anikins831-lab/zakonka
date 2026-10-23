@@ -1,4 +1,30 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<!doctype html><html><head><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ===== общая база Firebase (для GitHub Pages) ===== */
+(function(){
+var CFG={authDomain:"zakonka-d9f6d.firebaseapp.com",projectId:"zakonka-d9f6d",storageBucket:"zakonka-d9f6d.firebasestorage.app",messagingSenderId:"465746199555",appId:"1:465746199555:web:b7875ee2b129882106ba36"};
+var KEYS=["AIzaSyAGKsCOq0OMvvjuWPtM1jCPHyikq2F-yxE","AIzaSyAGKsCOq0OMvvjuWPtMljCPHyikq2F-yxE","AIzaSyAGKsCOq0OMvvjuWPtMIjCPHyikq2F-yxE"];
+async function pickKey(){
+ for(var i=0;i<KEYS.length;i++){
+  try{var r=await fetch("https://firestore.googleapis.com/v1/projects/"+CFG.projectId+"/databases/(default)/documents/meta?pageSize=1&key="+KEYS[i]);
+   if(r.status!==400)return KEYS[i];}catch(e){}
+ }
+ return KEYS[0];
+}
+var dbP=null;
+function getDb(){
+ if(!dbP)dbP=(async function(){
+  if(!window.firebase)return null;
+  var c=Object.assign({apiKey:await pickKey()},CFG);
+  firebase.initializeApp(c);return firebase.firestore();
+ })();
+ return dbP;
+}
+window.claude={use:async function(n){if(n==='db'){try{return await getDb()}catch(e){return null}}return null}};
+})();
+</script>
+<meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}.modes .btn{padding:12px 8px;font-size:15px}
 #det{padding-bottom:24px}#det summary{cursor:pointer;font-weight:800;font-size:16px}
 .dstep{cursor:default}.dstep:hover{transform:none}.dstep.dn{opacity:.6}.dstep.dn .dt{text-decoration:line-through}
